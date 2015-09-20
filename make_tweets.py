@@ -1,5 +1,7 @@
-import os, ast, tweepy, random, math, time
-
+# -*- coding: utf-8 -*-
+import os, ast, tweepy, random, math, time, sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 start_minus_2 = "START2**"
 start_minus_1 = "START1**"
 end = "END**"
@@ -18,10 +20,11 @@ with open(os.path.expanduser('~/Desktop/top_secret.txt')) as f:
     access_token = content[5]
     access_token_secret = content[7]
 
+auth = tweepy.OAuthHandler(consumer_key[:-1], consumer_secret[:-1])
+auth.set_access_token(access_token[:-1], access_token_secret[:-1])
 
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
+
 
 def first():
     text1 = 'potato'
@@ -112,6 +115,8 @@ def tweet():
     return (tweet, float(int(photo))%2.0)
 
 for i in range(20):
-    print tweet()
-
+    tw = tweet()[0]
+    print tw
+    if len(tw) <= 140:
+        api.update_status(status = str(tw))
 ##api.update_status(status = "hello world! stay tuned for some dank updates!")

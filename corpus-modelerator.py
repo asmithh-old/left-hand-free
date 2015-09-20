@@ -1,4 +1,7 @@
-import random, os.path, re, json, ast
+# -*- coding: utf-8 -*-
+import random, os.path, re, json, ast, sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 start_minus_2 = "START2**"
 start_minus_1 = "START1**"
 end = "END**"
