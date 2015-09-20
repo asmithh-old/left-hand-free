@@ -1,7 +1,10 @@
-import random
+import random, os.path, re, json, ast
 start_minus_2 = "START2**"
 start_minus_1 = "START1**"
 end = "END**"
+
+all_model_prob = {}
+sent_wts = {}
 
 def model_from_corpus(txt_sent):
     D = {}
@@ -13,7 +16,33 @@ def model_from_corpus(txt_sent):
                 if t[2] in D[(t[0], t[1])]:
                     D[(t[0], t[1])][t[2]] += 1
                 else:
-                     D[(t[0], t[1])] = 1
+                     D[(t[0], t[1])][t[2]] = 1
             else:
                  D[(t[0], t[1])] = {t[2]:1}
+
     return D
+
+def make_txt(doc):
+    with open(os.path.expanduser(doc)) as f:
+        content = f.readlines()
+        p =  ' '.join(content)
+        p = re.sub("\n|[^a-zA-Z\ .,;:']", '', p).lower()
+        p = re.sub(",", " ,", p)
+        p = re.sub(":", " :", p)
+        p = re.sub(";", " ;", p)
+        txt_sent = p.split('.')
+        f.close()
+    return (txt_sent, len(txt_sent))
+
+txts = [('~/Desktop/Iliad.txt', 'Iliad'),('~/Desktop/Dostoevsky.txt', 'Dostoevsky'), ('~/Desktop/Shakespeare.txt', 'Shakespeare'), ('~/Desktop/clrs chapters 1-6.txt', 'clrs'), ("~/Desktop/Season 1 Ja'mie.txt", "ja'mie")]
+
+for i in txts:
+    (filename, name) = i
+    m = make_txt(filename)
+    all_model_prob[name] = model_from_corpus(m[0])
+    sent_wts[name] = m[1]
+with open(os.path.expanduser('~/Desktop/model.csv'), 'w') as c:
+    c.write(str(sent_wts))
+    c.write('\n')
+    c.write(str(all_model_prob))
+    c.close()
